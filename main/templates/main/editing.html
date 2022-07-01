@@ -1,0 +1,143 @@
+{% extends 'main/base.html' %}
+
+{% block tittle %} Редактирование {% endblock %}
+
+
+
+{% block content %}
+
+    <h1 class="mt-4">Админ панель</h1>
+
+    <!-- Button trigger modal -->
+
+<button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">
+
+  Добавить новую статью
+
+</button>
+
+    {% if success %}
+
+    <p style="color:red">Запись добавлена</p>
+
+    {% endif %}
+
+    {% if update %}
+
+    {% if success_update %}
+
+    <p style="color:red">Запись обновлена</p>
+
+    {% endif %}
+
+    <p class="mt-4">Страница редактирования</p>
+
+<!--    <p><a href="{% url 'edit_page' %}">Вернуться назад</a></p>-->
+
+
+    <form id="update_data" method="post">
+
+            {% csrf_token %}
+
+            {{form}}
+
+        </form>
+
+    <button form="update_data" type="submit" class="btn btn-primary">Обновить</button>
+
+
+    {% else %}
+
+    <table class="table table-bordered mt-4">
+
+  <thead>
+
+    <tr>
+
+
+
+      <th scope="col">Дата создания</th>
+
+      <th scope="col">Название</th>
+
+      <th scope="col"> К статье  </th>
+
+
+
+    </tr>
+
+  </thead>
+
+  <tbody>
+
+      {% for i in posts %}
+    <tr>
+
+      <td>{{i.date_added}}</td>
+
+      <td>{{i.title}}</td>
+
+        <td><a href="#">{{i.slug}}</a></td>
+
+
+    </tr>
+
+    {% endfor %}
+
+
+
+   </tbody>
+
+</table>
+{% endif %}
+
+
+<!-- Modal -->
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+  <div class="modal-dialog" role="document">
+
+    <div class="modal-content">
+
+      <div class="modal-header">
+
+        <h5 class="modal-title" id="exampleModalLabel"> Статья </h5>
+
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+
+          <span aria-hidden="true"></span>
+
+        </button>
+
+      </div>
+
+      <div class="modal-body">
+
+        <form id="add_form" method="post">
+
+            {% csrf_token %}
+
+            {{form}}
+
+        </form>
+
+      </div>
+
+      <div class="modal-footer">
+
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"> Закрыть </button>
+
+        <button form="add_form" type="submit" class="btn btn-primary"> Добавить </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+{% endblock %}
