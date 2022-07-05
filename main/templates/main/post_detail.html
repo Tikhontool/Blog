@@ -1,5 +1,7 @@
 {% extends 'main/base.html' %}
 
+{% block tittle %} {{ post.title }} {% endblock %}
+
 {% block content %}
     <h1 class="title">{{ post.title }}</h1>
 
@@ -44,7 +46,8 @@
 
         <div class="field">
             <div class="control">
-                <button class="button is-success">Submit</button>
+
+                <button class="button btn btn-light"> Коментировать </button>
             </div>
         </div>
     </form>

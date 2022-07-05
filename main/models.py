@@ -1,11 +1,13 @@
 from django.db import models
 
 from django.db import models
+from django.contrib.auth.models import User
 
 
 
 
 class News(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор', blank=True, null= True)
     title = models.CharField('Заголовок', max_length=255)
     slug = models.SlugField('URL')
     intro = models.TextField('Краткое описание')

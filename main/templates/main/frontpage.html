@@ -7,7 +7,7 @@
 
 {% block content %}
     {% for post in posts %}
-        <div class="post block">
+        <div class="post_block">
             <h2 class="subtitle">{{ post.title }}</h2>
 
             <small>Posted at {{ post.date_added }}</small>
@@ -15,11 +15,16 @@
             <p>{{ post.intro }}</p>
 
             {% if post.img %}
-            <img src="{{ post.img.url }}">
+            <img  class="foto" src="{{ post.img.url }}">
             {% endif %}
 
+            <a href="{% url 'update_page' post.slug %}">редактировать</a>
+            <a href="{% url 'delete_page' post.slug %}">удалить</a>
+
             <br>
-            <a href="{% url 'post_detail' post.slug %}">Read more</a>
+
+            <a href="{% url 'post_detail' post.slug %}" class="btn btn-light"> Читать </a>
+
         </div>
     {% endfor %}
 {% endblock %}

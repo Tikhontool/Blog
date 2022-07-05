@@ -26,9 +26,12 @@
                   <li class="nav-item">
                   <a class="nav-link" href="{% url 'blogs' %}"> Статьи </a>
                   </li>
+
                   <li class="nav-item">
                   <a class="nav-link" href="{% url 'editing' %}"> Редактирование </a>
                   </li>
+
+
                   <li class="nav-item">
                   <a class="nav-link" href="#link-3">Ссылка 3</a>
                   </li>
@@ -57,6 +60,7 @@
             </nav>
           </div>
           <div class="col-md-10 col-lg-10 content-container" style="background-color: #ffe0b2">
+              <div сlass="block_contenet">
 
            {% block content %}
             {% endblock %}

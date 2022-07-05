@@ -6,9 +6,9 @@
 
 <form method="post" >
     {% csrf_token %}{{ form|crispy }}
-    <p> Don't have account? Create one <a href="/sign-up"> Here </a></p>
-    <p> Do you forgot your password? Create one <a href="{% url 'reset_password' %}"> Here </a></p>
-    <button type="submit"class="btn btn-success">Login</button>
+    <p> Нет акаунта? <a href="/sign-up"> создать </a></p>
+    <p> Забыли пароль? Востановить <a href="{% url 'reset_password' %}"> тут </a></p>
+    <button type="submit"class="btn btn-success"> Войти </button>
 </form>
 
 {% endblock %}

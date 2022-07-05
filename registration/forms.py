@@ -7,12 +7,10 @@ from .models import MyUserCreationForm, MyPasswordChangeModel
 
 class RegisterForm(MyUserCreationForm):
     email = forms.EmailField()
-    favorite_animal = forms.CharField(required=False, max_length=100) # required - обязательность поля
-
 
     class Meta:
         model = User
-        fields = ["username", "email", "favorite_animal", "password1", "password2"]
+        fields = ["username", "email", "password1", "password2"]
 
 
 

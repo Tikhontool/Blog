@@ -22,4 +22,17 @@
   .navbar-container .navbar-nav {
     flex-direction: column !important;
   }
+
 }
+
+ .post_block{
+   margin-top: 1%;
+   margin-left: 2%;
+   margin-right: 2%;
+   margin-bottom: 5%;
+
+  }
+  .foto{
+    width: 60%;
+    margin-bottom: 1%;
+  }
