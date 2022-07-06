@@ -25,9 +25,9 @@ class News(models.Model):
 
 class Comment(models.Model):
     post = models.ForeignKey(News, related_name='comments', on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, verbose_name='Имя')
     email = models.EmailField()
-    body = models.TextField()
+    body = models.TextField(verbose_name='Текст')
     date_added = models.DateTimeField(auto_now_add=True)
 
     class Meta:

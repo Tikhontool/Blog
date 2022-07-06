@@ -1,3 +1,7 @@
+from django.core.checks import messages
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
@@ -7,10 +11,10 @@ from .models import News
 from django.views.generic import ListView, DetailView,CreateView, UpdateView,DeleteView
 
 
-def home(requests):
-
-    return render(requests, 'main/main_page.html')
-
+class Home(ListView):
+    model = News
+    template_name = 'main/main_page.html'
+    context_object_name = 'posts'
 
 
 class Frontpage(ListView):
@@ -18,6 +22,17 @@ class Frontpage(ListView):
     template_name = 'main/frontpage.html'
     context_object_name = 'posts'
 
+
+
+# class Authors(ListView):
+#     model = News
+#     template_name = 'main/authors_page.html'
+#     context_object_name = 'posts'
+
+
+def authors(request):
+
+    return (request, 'main/authors_page.html')
 
 
 def post_detail(request, slug):
@@ -39,57 +54,33 @@ def post_detail(request, slug):
 
 
 
-def edit_page(request):
-    success = False
-    if request.method == 'POST':
-        form = ArticleForm(request.POST)
-        if form.is_valid():
-            form.save()
-            success = True
-
-    template = 'edit_page.html'
-    context = {
-        'list_articles': News.objects.all().order_by('-id'),
-        'form': ArticleForm(),
-        'success': success
-    }
-    return render(request, template, context)
-
-
-
-def editing(request):
-    success = False
-    if request.method == 'POST':
-        form = ArticleForm(request.POST, request.FILES)
-        if form.is_valid():
-            News.author = request.user
-            form.save()
-            # img_obj = form.instance
-
-            success = True
-
-    template = 'main/editing.html'
-    context = {
-        'posts': News.objects.all(),
-        'form': ArticleForm(),
-        'success': success
-    }
-
-    return render(request, template, context)
-
+# class Post_detail ( CreateView):
+#     model = News
+#     template_name = 'main/post_detail.html'
+#     form_class = CommentForm
+#     success_url = reverse_lazy('post_detail')
+#
+#     def get_context_data(self, **kwargs):
+#         kwargs['post'] = News.objects.all().order_by('-id')
+#         return super().get_context_data(**kwargs)
+#     def form_valid(self, form):
+#         self.object = form.save(commit=False)
+#         self.object.post = self.request.user
+#         self.object.save()
+#         return super().form_valid(form)
 
 
 
 class ArticleCreateView(LoginRequiredMixin, CreateView):
-    login_url = reverse_lazy('login')                       #ссылка на страницу, которая будет выходить, для незарегестрированных пользователей
+    login_url = reverse_lazy('login')
     model = News
     template_name = 'main/editing.html'
     form_class = ArticleForm
-    success_url = reverse_lazy('editing')                   #ссылка на страницу, после удачного входа
+    success_url = reverse_lazy('editing')
     success_msg = 'Запись создана'
 
     def get_context_data(self, **kwargs):
-        kwargs['posts'] = News.objects.all().order_by('-id')  # Не понятно
+        kwargs['posts'] = News.objects.all().order_by('-id')
         return super().get_context_data(**kwargs)
 
     def form_valid(self, form):
@@ -99,30 +90,43 @@ class ArticleCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
-def update_page(request, pk):
-    success_update = False
-    get_article = News.objects.get(pk=pk)
-    if request.method == 'POST':
-        form = ArticleForm(request.POST, instance=get_article)
-        if form.is_valid():
-            form.save()
-            success_update = True
-    template = 'edit_page.html'
-    context = {
-        'get_article': get_article,
-        'update': True,
-        'form': ArticleForm(instance=get_article),
-        'success_update': success_update
-
-    }
-    return render(request, template, context)
+class ArticleUpdateView(LoginRequiredMixin, UpdateView):
+    model = News
+    template_name = 'main/editing.html'
+    form_class = ArticleForm
+    success_url = reverse_lazy('editing')
+    success_msg = 'Запись успешно обновлена'
+    def get_context_data(self,**kwargs):
+        kwargs['update'] = True
+        return super().get_context_data(**kwargs)
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        if self.request.user != kwargs['instance'].author:
+            return self.handle_no_permission()
+        return kwargs
 
 
-def delete_page(request, pk):
-    get_article = News.objects.get(pk=pk)
-    get_article.delete()
 
-    return redirect(reverse('edit_page'))
+
+class ArticleDeleteView(LoginRequiredMixin, DeleteView):
+    model = News
+    template_name = 'main/editing.html'
+    success_url = reverse_lazy('editing')
+
+    def post(self,request,*args,**kwargs):
+        return super().post(request)
+
+    def form_valid(self, form, **kwargs):
+        self.object = self.get_object()
+        if self.request.user == self.object.author:
+            success_url = self.get_success_url()
+            self.object.delete()
+            return HttpResponseRedirect(success_url)
+        else:
+            return self.handle_no_permission()
+
+
+
 
 
 
